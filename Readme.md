@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Kristina Meshcheryakova](https://up.htmlacademy.ru/javascript/11/user/290591).
-* Наставник: `Неизвестно`.
+* Наставник: [Dmitry Ermakov](https://up.htmlacademy.ru/javascript/11/user/195904).
 
 ---
 
