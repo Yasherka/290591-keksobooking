@@ -8,6 +8,8 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditio
 
 var TIMES = ['12:00', '13:00', '14:00'];
 
+var POINTER_HEIGHT = 18;
+
 var similarListElement = document.querySelector('.map__pins');
 var similarPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 
@@ -40,10 +42,10 @@ var compareType = function (value, array) {
   var ruTypes = ['Квартира', 'Дом', 'Бунгало'];
   for (var i = 0; i < array.length; i++) {
     if (array[i] === value) {
-      value = ruTypes[i];
+      return ruTypes[i];
     }
   }
-  return value;
+  return ruTypes[i];
 };
 
 var createPropose = function (index, title, type, time, features) {
@@ -78,31 +80,32 @@ var createPropose = function (index, title, type, time, features) {
 
 var createPinElement = function (pin) {
   var pinElement = similarPinTemplate.cloneNode(true);
+  var pinHeight = pinElement.querySelector('img').getAttribute('height');
 
-  pinElement.style.left = (pin.location.x - 28) + 'px';
-  pinElement.style.top = (pin.location.y - 62) + 'px';
+  pinElement.style.left = pin.location.x + 'px';
+  pinElement.style.top = (pin.location.y - pinHeight - POINTER_HEIGHT) + 'px';
   pinElement.querySelector('img').setAttribute('src', pin.author.avatar);
 
   return pinElement;
 };
 
-var createCardElement = function (array) {
+var createCardElement = function (element) {
   var cardElement = cardTemplate.cloneNode(true);
   var cardListElement = cardListTemplate.cloneNode();
   var fullList = cardElement.querySelector('.popup__features');
 
   cardElement.replaceChild(cardListElement, fullList);
 
-  cardElement.querySelector('.popup__avatar').setAttribute('src', array.author.avatar);
-  cardElement.querySelector('h3').textContent = array.offer.title;
-  cardElement.querySelector('p small').textContent = array.offer.address;
-  cardElement.querySelector('.popup__price').innerHTML = array.offer.price + ' &#x20bd;/ночь';
-  cardElement.querySelector('h4').textContent = compareType(array.offer.type, TYPES);
-  cardElement.querySelector('p:nth-of-type(3)').textContent = array.offer.rooms + ' комнаты для ' + array.offer.guests + ' гостей';
-  cardElement.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + array.offer.checkin + ', выезд до ' + array.offer.checkout;
-  cardElement.querySelector('p:last-of-type').textContent = array.offer.description;
+  cardElement.querySelector('.popup__avatar').setAttribute('src', element.author.avatar);
+  cardElement.querySelector('h3').textContent = element.offer.title;
+  cardElement.querySelector('p small').textContent = element.offer.address;
+  cardElement.querySelector('.popup__price').innerHTML = element.offer.price + ' &#x20bd;/ночь';
+  cardElement.querySelector('h4').textContent = compareType(element.offer.type, TYPES);
+  cardElement.querySelector('p:nth-of-type(3)').textContent = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
+  cardElement.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + element.offer.checkin + ', выезд до ' + element.offer.checkout;
+  cardElement.querySelector('p:last-of-type').textContent = element.offer.description;
 
-  var featuresList = array.offer.features;
+  var featuresList = element.offer.features;
   for (var i = 0; i < featuresList.length; i++) {
     cardElement.querySelector('.popup__features').innerHTML += '<li class=\'feature feature--' + featuresList[i] + '\'></li>';
   }
@@ -118,7 +121,11 @@ var renderSimilarElements = function (array) {
   }
 
   similarListElement.appendChild(fragment);
-  cardContainer.insertBefore(createCardElement(array[0]), cardPosition);
+};
+
+var renderElementBefore = function (element, container, position) {
+
+  container.insertBefore(createCardElement(element), position);
 };
 
 var proposes = [];
@@ -126,6 +133,7 @@ for (var i = 0; i < 8; i++) {
   proposes[i] = createPropose(i, TITLES, TYPES, TIMES, FEATURES);
 }
 
-document.querySelector('.map').classList.remove('map--faded');
+cardContainer.classList.remove('map--faded');
 
 renderSimilarElements(proposes);
+renderElementBefore(proposes[0], cardContainer, cardPosition);
