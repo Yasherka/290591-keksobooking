@@ -83,7 +83,7 @@ var createPinElement = function (pin) {
   var pinHeight = pinElement.querySelector('img').getAttribute('height');
 
   pinElement.style.left = pin.location.x + 'px';
-  pinElement.style.top = (pin.location.y - pinHeight - POINTER_HEIGHT) + 'px';
+  pinElement.style.top = (pin.location.y - pinHeight / 2 - POINTER_HEIGHT) + 'px';
   pinElement.querySelector('img').setAttribute('src', pin.author.avatar);
 
   return pinElement;
