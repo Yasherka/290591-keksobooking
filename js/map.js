@@ -9,6 +9,7 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditio
 var TIMES = ['12:00', '13:00', '14:00'];
 
 var POINTER_HEIGHT = 18;
+var ESC_KEYCODE = 27;
 
 var similarListElement = document.querySelector('.map__pins');
 var similarPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
@@ -85,6 +86,7 @@ var createPinElement = function (pin) {
   pinElement.style.left = pin.location.x + 'px';
   pinElement.style.top = (pin.location.y - pinHeight / 2 - POINTER_HEIGHT) + 'px';
   pinElement.querySelector('img').setAttribute('src', pin.author.avatar);
+  pinElement.style.display = 'none';
 
   return pinElement;
 };
@@ -104,12 +106,12 @@ var createCardElement = function (element) {
   cardElement.querySelector('p:nth-of-type(3)').textContent = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
   cardElement.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + element.offer.checkin + ', выезд до ' + element.offer.checkout;
   cardElement.querySelector('p:last-of-type').textContent = element.offer.description;
+  cardElement.style.display = 'none';
 
   var featuresList = element.offer.features;
   for (var i = 0; i < featuresList.length; i++) {
     cardElement.querySelector('.popup__features').innerHTML += '<li class=\'feature feature--' + featuresList[i] + '\'></li>';
   }
-
   return cardElement;
 };
 
@@ -124,16 +126,120 @@ var renderSimilarElements = function (array) {
 };
 
 var renderElementBefore = function (element, container, position) {
-
-  container.insertBefore(createCardElement(element), position);
+  for (var i = 0; i < element.length; i++) {
+    container.insertBefore(createCardElement(element[i]), position);
+  }
 };
+
+var disableElement = function (element) {
+  for (var i = 0; i < element.length; i++) {
+    element[i].setAttribute('disabled', 'disabled');
+  }
+};
+
+var enableElement = function (element) {
+  for (var i = 0; i < element.length; i++) {
+    element[i].removeAttribute('disabled');
+  }
+};
+
+var switchPin = function (pins, popups) {
+  var pinsArray = Array.prototype.slice.call(pins);
+  var popupsArray = Array.prototype.slice.call(popups);
+
+  for (var i = 0; i < pinsArray.length; i++) {
+    pinsList[i].setAttribute('tabindex', '0');
+
+    (function () {
+      var k = i;
+      pinsArray[k].addEventListener('click', function () {
+        if (pinsArray[k].classList.contains('map__pin--active')) {
+          return;
+        } else {
+          hidePrevios(pinsArray, popupsArray);
+          showNew(pinsArray, popupsArray, k);
+        }
+      });
+    })();
+  }
+};
+
+var hidePrevios = function (pins, popups) {
+  for (var j = 0; j < popups.length; j++) {
+    var index = pins[j];
+    if (index.classList.contains('map__pin--active')) {
+      index.classList.remove('map__pin--active');
+      if (j > 0) {
+        popups[j - 1].style.display = 'none';
+      }
+    }
+  }
+};
+
+var showNew = function (pins, popups, k) {
+  pins[k].classList.add('map__pin--active');
+  if (k > 0) {
+    popups[k - 1].style.display = 'block';
+    pressEsc(popups[k - 1], pins[k]);
+  }
+};
+
+var pressEsc = function (popup, pin) {
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      popup.style.display = 'none';
+      pin.classList.remove('map__pin--active');
+    }
+  });
+};
+
+var activateMap = function (mainPin, pins) {
+  var noticeForm = document.querySelector('.notice__form');
+
+  mainPin.addEventListener('mouseup', function () {
+    cardContainer.classList.remove('map--faded');
+    noticeForm.classList.remove('notice__form--disabled');
+    enableElement(noticeFieldset);
+
+    for (var i = 0; i < pinsList.length; i++) {
+      pins[i].style.display = 'block';
+    }
+  });
+};
+
+var closePopup = function (popupClose, pins) {
+  var popupCloseArray = Array.prototype.slice.call(popupClose);
+
+  for (var i = 0; i < popupCloseArray.length; i++) {
+    popupCloseArray[i].setAttribute('tabindex', '0');
+
+    (function () {
+      var j = i;
+      popupCloseArray[j].addEventListener('click', function () {
+        var parent = popupCloseArray[j].parentNode;
+        parent.style.display = 'none';
+        pins[j + 1].classList.remove('map__pin--active');
+      });
+    })();
+  }
+};
+
+var noticeFieldset = document.querySelectorAll('.notice__form fieldset');
+disableElement(noticeFieldset);
 
 var proposes = [];
 for (var i = 0; i < 8; i++) {
   proposes[i] = createPropose(i, TITLES, TYPES, TIMES, FEATURES);
 }
 
-cardContainer.classList.remove('map--faded');
-
 renderSimilarElements(proposes);
-renderElementBefore(proposes[0], cardContainer, cardPosition);
+renderElementBefore(proposes, cardContainer, cardPosition);
+
+var mainPin = document.querySelector('.map__pin--main');
+var pinsList = document.querySelectorAll('.map__pin');
+var popupList = document.querySelectorAll('.popup');
+var popupClose = document.querySelectorAll('.popup__close');
+
+switchPin(pinsList, popupList);
+activateMap(mainPin, pinsList);
+closePopup(popupClose, pinsList);
