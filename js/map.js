@@ -9,6 +9,7 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditio
 var TIMES = ['12:00', '13:00', '14:00'];
 
 var POINTER_HEIGHT = 18;
+var ESC_KEYCODE = 27;
 
 var similarListElement = document.querySelector('.map__pins');
 var similarPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
@@ -78,13 +79,16 @@ var createPropose = function (index, title, type, time, features) {
   return propose;
 };
 
-var createPinElement = function (pin) {
+var createPinElement = function (pin, index) {
   var pinElement = similarPinTemplate.cloneNode(true);
   var pinHeight = pinElement.querySelector('img').getAttribute('height');
 
   pinElement.style.left = pin.location.x + 'px';
   pinElement.style.top = (pin.location.y - pinHeight / 2 - POINTER_HEIGHT) + 'px';
   pinElement.querySelector('img').setAttribute('src', pin.author.avatar);
+  // pinElement.classList.add('hidden');
+  pinElement.setAttribute('tabindex', '0');
+  pinElement.dataset.index = index;
 
   return pinElement;
 };
@@ -109,7 +113,6 @@ var createCardElement = function (element) {
   for (var i = 0; i < featuresList.length; i++) {
     cardElement.querySelector('.popup__features').innerHTML += '<li class=\'feature feature--' + featuresList[i] + '\'></li>';
   }
-
   return cardElement;
 };
 
@@ -117,23 +120,93 @@ var renderSimilarElements = function (array) {
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < array.length; i++) {
-    fragment.appendChild(createPinElement(array[i]));
+    fragment.appendChild(createPinElement(array[i], i));
   }
-
   similarListElement.appendChild(fragment);
+  mainPin.removeEventListener('click', onMainPinClick);
 };
 
 var renderElementBefore = function (element, container, position) {
-
   container.insertBefore(createCardElement(element), position);
 };
+
+var disableElement = function (element) {
+  for (var i = 0; i < element.length; i++) {
+    element[i].setAttribute('disabled', 'disabled');
+  }
+};
+
+var enableElement = function (element) {
+  for (var i = 0; i < element.length; i++) {
+    element[i].removeAttribute('disabled');
+  }
+};
+
+var onMainPinClick = function () {
+  var noticeForm = document.querySelector('.notice__form');
+
+  cardContainer.classList.remove('map--faded');
+  noticeForm.classList.remove('notice__form--disabled');
+  enableElement(noticeFieldset);
+  renderSimilarElements(proposes);
+};
+
+var onPopupEscPress = function (event) {
+  if (event.keyCode === ESC_KEYCODE) {
+    hiddenPopup();
+    deactivatePin();
+  }
+};
+
+var hiddenPopup = function () {
+  if (document.querySelector('.popup')) {
+    var popup = document.querySelector('.popup');
+    popup.parentNode.removeChild(popup);
+    document.removeEventListener('keydown', onPopupEscPress);
+  }
+};
+
+var deactivatePin = function () {
+  similarListElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
+};
+
+var onPinClick = function (event) {
+  var target = event.target;
+
+  if (target.parentNode.className === 'map__pin') {
+    var pin = target.parentNode;
+
+    if (similarListElement.querySelector('.map__pin--active')) {
+      deactivatePin();
+    }
+    pin.classList.add('map__pin--active');
+    var index = +pin.dataset.index;
+
+    hiddenPopup();
+    renderElementBefore(proposes[index], cardContainer, cardPosition);
+    document.addEventListener('keydown', onPopupEscPress);
+  }
+};
+
+var onPopupCloseClick = function (event) {
+  var target = event.target;
+
+  if (target.className === 'popup__close') {
+    hiddenPopup();
+    deactivatePin();
+  }
+};
+
+var noticeFieldset = document.querySelectorAll('.notice__form fieldset');
+disableElement(noticeFieldset);
 
 var proposes = [];
 for (var i = 0; i < 8; i++) {
   proposes[i] = createPropose(i, TITLES, TYPES, TIMES, FEATURES);
 }
 
-cardContainer.classList.remove('map--faded');
+var mainPin = document.querySelector('.map__pin--main');
 
-renderSimilarElements(proposes);
-renderElementBefore(proposes[0], cardContainer, cardPosition);
+mainPin.addEventListener('click', onMainPinClick);
+similarListElement.addEventListener('click', onPinClick);
+cardContainer.addEventListener('click', onPopupCloseClick);
