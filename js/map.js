@@ -79,14 +79,16 @@ var createPropose = function (index, title, type, time, features) {
   return propose;
 };
 
-var createPinElement = function (pin) {
+var createPinElement = function (pin, index) {
   var pinElement = similarPinTemplate.cloneNode(true);
   var pinHeight = pinElement.querySelector('img').getAttribute('height');
 
   pinElement.style.left = pin.location.x + 'px';
   pinElement.style.top = (pin.location.y - pinHeight / 2 - POINTER_HEIGHT) + 'px';
   pinElement.querySelector('img').setAttribute('src', pin.author.avatar);
-  pinElement.classList.add('hidden');
+  // pinElement.classList.add('hidden');
+  pinElement.setAttribute('tabindex', '0');
+  pinElement.dataset.index = index;
 
   return pinElement;
 };
@@ -106,7 +108,6 @@ var createCardElement = function (element) {
   cardElement.querySelector('p:nth-of-type(3)').textContent = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
   cardElement.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + element.offer.checkin + ', выезд до ' + element.offer.checkout;
   cardElement.querySelector('p:last-of-type').textContent = element.offer.description;
-  cardElement.classList.add('hidden');
 
   var featuresList = element.offer.features;
   for (var i = 0; i < featuresList.length; i++) {
@@ -119,15 +120,14 @@ var renderSimilarElements = function (array) {
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < array.length; i++) {
-    fragment.appendChild(createPinElement(array[i]));
+    fragment.appendChild(createPinElement(array[i], i));
   }
   similarListElement.appendChild(fragment);
+  mainPin.removeEventListener('click', onMainPinClick);
 };
 
 var renderElementBefore = function (element, container, position) {
-  for (var i = 0; i < element.length; i++) {
-    container.insertBefore(createCardElement(element[i]), position);
-  }
+  container.insertBefore(createCardElement(element), position);
 };
 
 var disableElement = function (element) {
@@ -142,89 +142,59 @@ var enableElement = function (element) {
   }
 };
 
-var activateMap = function (mainPin, pins) {
+var onMainPinClick = function () {
   var noticeForm = document.querySelector('.notice__form');
 
-  mainPin.addEventListener('mouseup', function () {
-    cardContainer.classList.remove('map--faded');
-    noticeForm.classList.remove('notice__form--disabled');
-    enableElement(noticeFieldset);
-
-    for (var i = 0; i < pinsList.length; i++) {
-      pins[i].classList.remove('hidden');
-    }
-  });
+  cardContainer.classList.remove('map--faded');
+  noticeForm.classList.remove('notice__form--disabled');
+  enableElement(noticeFieldset);
+  renderSimilarElements(proposes);
 };
 
 var onPopupEscPress = function (event) {
   if (event.keyCode === ESC_KEYCODE) {
-    hiddenPopup(popupList);
-    deactivatePin(document);
+    hiddenPopup();
+    deactivatePin();
   }
 };
 
-var hiddenPopup = function (popups) {
-  var popupsArray = Array.prototype.slice.call(popups);
-
-  for (var i = 0; i < popupsArray.length; i++) {
-    if (!popupsArray[i].classList.contains('hidden')) {
-      document.removeEventListener('keydown', onPopupEscPress);
-      return popupsArray[i].classList.add('hidden');
-    }
+var hiddenPopup = function () {
+  if (document.querySelector('.popup')) {
+    var popup = document.querySelector('.popup');
+    popup.parentNode.removeChild(popup);
+    document.removeEventListener('keydown', onPopupEscPress);
   }
-  return popupsArray[i];
 };
 
-var deactivatePin = function (container) {
-  container.querySelector('.map__pin--active').classList.remove('map__pin--active');
+var deactivatePin = function () {
+  similarListElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
 };
 
-var switchPopup = function (pins, popups) {
-  var pinsArray = Array.prototype.slice.call(pins);
-  var popupsArray = Array.prototype.slice.call(popups);
-
-  for (var i = 0; i < pinsArray.length; i++) {
-    pinsList[i].setAttribute('tabindex', '0');
-
-    if (i > 0 && pinsArray[i].classList.contains('map__pin--active')) {
-      return popupsArray[i - 1].classList.remove('hidden');
-    }
-  }
-  return popupsArray[i - 1];
-};
-
-var openPopup = function () {
+var onPinClick = function (event) {
   var target = event.target;
-  var pin = target.closest('.map__pin');
 
-  if (!pin) {
-    return;
-  }
-  if (!similarListElement.contains(pin)) {
-    return;
-  }
-  if (similarListElement.querySelector('.map__pin--active')) {
-    deactivatePin(similarListElement);
-  }
+  if (target.parentNode.className === 'map__pin') {
+    var pin = target.parentNode;
 
-  pin.classList.add('map__pin--active');
-  hiddenPopup(popupList);
-  switchPopup(pinsList, popupList);
-  document.addEventListener('keydown', onPopupEscPress);
+    if (similarListElement.querySelector('.map__pin--active')) {
+      deactivatePin();
+    }
+    pin.classList.add('map__pin--active');
+    var index = +pin.dataset.index;
+
+    hiddenPopup();
+    renderElementBefore(proposes[index], cardContainer, cardPosition);
+    document.addEventListener('keydown', onPopupEscPress);
+  }
 };
 
-var closePopup = function () {
+var onPopupCloseClick = function (event) {
   var target = event.target;
-  var close = target.closest('.popup__close');
 
-  if (!close) {
-    return;
+  if (target.className === 'popup__close') {
+    hiddenPopup();
+    deactivatePin();
   }
-  if (!cardContainer.contains(close)) {
-    return;
-  }
-  hiddenPopup(popupList);
-  deactivatePin(cardContainer);
 };
 
 var noticeFieldset = document.querySelectorAll('.notice__form fieldset');
@@ -235,19 +205,8 @@ for (var i = 0; i < 8; i++) {
   proposes[i] = createPropose(i, TITLES, TYPES, TIMES, FEATURES);
 }
 
-renderSimilarElements(proposes);
-renderElementBefore(proposes, cardContainer, cardPosition);
-
 var mainPin = document.querySelector('.map__pin--main');
-var pinsList = document.querySelectorAll('.map__pin');
-var popupList = document.querySelectorAll('.popup');
 
-activateMap(mainPin, pinsList);
-
-similarListElement.addEventListener('click', function () {
-  openPopup();
-});
-
-cardContainer.addEventListener('click', function () {
-  closePopup();
-});
+mainPin.addEventListener('click', onMainPinClick);
+similarListElement.addEventListener('click', onPinClick);
+cardContainer.addEventListener('click', onPopupCloseClick);
