@@ -204,43 +204,48 @@ var setRecuired = function (element) {
   element.required = true;
 };
 
-var syncSelect = function (first, second) {
-  for (var i = 0; i < first.options.length; i++) {
-    var option = first.options[i];
-    if (option.selected) {
-      second.options[i].selected = true;
-    }
-  }
+var syncSelect = function (secondSelect) {
+  var index = event.target.selectedIndex;
+  secondSelect.selectedIndex = index;
 };
 
-var setMinPrice = function () {
+var setMinPrice = function (event) {
+  var index = event.target.selectedIndex;
   var minPrices = [1000, 0, 5000, 10000];
 
-  for (var i = 0; i < noticeType.options.length; i++) {
-    var option = noticeType.options[i];
-    if (option.selected) {
-      noticePrice.min = minPrices[i];
-    }
-  }
+  noticePrice.min = minPrices[index];
+
+  return noticePrice.min;
 };
 
-var setGuests = function () {
-  for (var i = 0; i < noticeRoomNumber.options.length; i++) {
-    var option = noticeRoomNumber.options[i];
-    if (option.selected) {
-      var index = i;
+var setGuests = function (event) {
+  var index = event.target.value;
+  var capacities = noticeCapacity.options;
 
-      switch (index) {
-        case 0: noticeCapacity.options[2].selected = true;
-          break;
-        case 1: noticeCapacity.options[1].selected = true;
-          break;
-        case 2: noticeCapacity.options[0].selected = true;
-          break;
-        case 3: noticeCapacity.options[3].selected = true;
-          break;
-      }
-    }
+  switch (index) {
+    case '1':
+      disableElements(capacities);
+      capacities[2].disabled = false;
+      capacities.selectedIndex = 2;
+      break;
+    case '2':
+      disableElements(capacities);
+      capacities[1].disabled = false;
+      capacities[2].disabled = false;
+      capacities.selectedIndex = 1;
+      break;
+    case '3':
+      disableElements(capacities);
+      capacities[0].disabled = false;
+      capacities[1].disabled = false;
+      capacities[2].disabled = false;
+      capacities.selectedIndex = 0;
+      break;
+    case '100':
+      disableElements(capacities);
+      capacities[3].disabled = false;
+      capacities.selectedIndex = 3;
+      break;
   }
 };
 
@@ -254,12 +259,6 @@ var checkInputs = function () {
       input.style.borderColor = 'red';
       stopSubmit = true;
     }
-  }
-  if (noticeAddress.value === '') {
-    noticeAddress.style.borderColor = 'red';
-    stopSubmit = true;
-  } else {
-    noticeAddress.style.borderColor = '';
   }
   return stopSubmit;
 };
@@ -293,41 +292,37 @@ var noticeCapacity = noticeForm.querySelector('#capacity');
 var noticeSubmit = noticeForm.querySelector('.form__submit');
 var inputs = noticeForm.querySelectorAll('input');
 
-noticeForm.setAttribute('action', 'https://js.dump.academy/keksobooking');
+noticeForm.action = 'https://js.dump.academy/keksobooking';
 
-noticeTitle.setAttribute('minlength', '30');
-noticeTitle.setAttribute('maxlength', '100');
+noticeTitle.minlength = 30;
+noticeTitle.maxlength = 100;
 setRecuired(noticeTitle);
 
 noticeAddress.readOnly = true;
-noticeAddress.addEventListener('mouseup', function () {
-  noticeAddress.setAttribute('value', 'address');
+mainPin.addEventListener('mouseup', function () {
+  noticeAddress.value = 'address';
 });
 setRecuired(noticeAddress);
 
-noticePrice.setAttribute('type', 'number');
-noticePrice.setAttribute('value', '1000');
-noticePrice.setAttribute('min', '0');
-noticePrice.setAttribute('max', '1000000');
+noticePrice.type = 'number';
+noticePrice.value = 1000;
+noticePrice.min = 1000;
+noticePrice.max = 1000000;
 setRecuired(noticePrice);
 
-noticeCapacity.selectedIndex = 2;
+noticeCapacity.value = noticeRoomNumber.value;
 
 noticeTimeIn.addEventListener('change', function () {
-  syncSelect(noticeTimeIn, noticeTimeOut);
+  syncSelect(noticeTimeOut);
 });
 
 noticeTimeOut.addEventListener('change', function () {
-  syncSelect(noticeTimeOut, noticeTimeIn);
+  syncSelect(noticeTimeIn);
 });
 
-noticeType.addEventListener('change', function () {
-  setMinPrice();
-});
+noticeType.addEventListener('change', setMinPrice);
 
-noticeRoomNumber.addEventListener('change', function () {
-  setGuests();
-});
+noticeRoomNumber.addEventListener('change', setGuests);
 
 noticeSubmit.addEventListener('click', function (event) {
   if (checkInputs()) {
