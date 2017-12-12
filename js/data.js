@@ -68,16 +68,6 @@
   };
 
   window.data = {
-    proposes: createProposeList(),
-
-    compareType: function (value) {
-      var ruTypes = ['Квартира', 'Дом', 'Бунгало'];
-      for (var i = 0; i < TYPES.length; i++) {
-        if (TYPES[i] === value) {
-          return ruTypes[i];
-        }
-      }
-      return ruTypes[i];
-    }
+    proposes: createProposeList()
   };
 })();
