@@ -85,8 +85,8 @@
   noticeAddress.readOnly = true;
   setRecuired(noticeAddress);
   window.form = {
-    setNoticeAddress: function () {
-      noticeAddress.value = 'address';
+    setNoticeAddress: function (location) {
+      noticeAddress.value = 'x: ' + location.x + ', y:' + location.y;
     }
   };
 
