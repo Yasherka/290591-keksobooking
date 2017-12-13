@@ -69,9 +69,10 @@
 
   mainPin.addEventListener('click', onMainPinClick);
 
+  var mainPinHeight = mainPin.querySelector('img').height;
   var limits = {
-    top: 100,
-    bottom: 500
+    top: 100 - mainPinHeight / 2 - MAIN_POINTER_HEIGHT,
+    bottom: 500 - mainPinHeight / 2 - MAIN_POINTER_HEIGHT
   };
 
   mainPin.addEventListener('mousedown', function (evt) {
@@ -115,20 +116,16 @@
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+
+      var pinLocation = {
+        x: parseInt(mainPin.style.left, 10) - POINTER_WIDTH / 2,
+        y: parseInt(mainPin.style.top, 10) + mainPinHeight / 2 + MAIN_POINTER_HEIGHT
+      };
+      window.form.setNoticeAddress(pinLocation);
     };
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-  });
-
-  var mainPinHeight = mainPin.querySelector('img').height;
-
-  mainPin.addEventListener('mouseup', function () {
-    var pinLocation = {
-      x: parseInt(mainPin.style.left, 10) - POINTER_WIDTH / 2,
-      y: parseInt(mainPin.style.top, 10) + mainPinHeight / 2 + MAIN_POINTER_HEIGHT
-    };
-    window.form.setNoticeAddress(pinLocation);
   });
 
   similarListElement.addEventListener('click', onPinClick);
