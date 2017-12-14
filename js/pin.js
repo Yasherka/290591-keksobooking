@@ -118,8 +118,8 @@
       document.removeEventListener('mouseup', onMouseUp);
 
       var pinLocation = {
-        x: parseInt(mainPin.style.left, 10) - POINTER_WIDTH / 2,
-        y: parseInt(mainPin.style.top, 10) + mainPinHeight / 2 + MAIN_POINTER_HEIGHT
+        x: mainPin.offsetLeft - POINTER_WIDTH / 2,
+        y: mainPin.offsetTop + mainPinHeight / 2 + MAIN_POINTER_HEIGHT
       };
       window.form.setNoticeAddress(pinLocation);
     };
