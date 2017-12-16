@@ -17,18 +17,13 @@
     element.required = true;
   };
 
-  var syncSelect = function (secondSelect) {
-    var index = event.target.selectedIndex;
-    secondSelect.selectedIndex = index;
+  var syncValues = function (element, index) {
+    element.selectedIndex = index;
   };
 
-  var setMinPrice = function (event) {
-    var index = event.target.selectedIndex;
+  var syncValueWithMin = function (element, index) {
     var minPrices = [1000, 0, 5000, 10000];
-
-    noticePrice.min = minPrices[index];
-
-    return noticePrice.min;
+    element.min = minPrices[index];
   };
 
   var setGuests = function (event) {
@@ -98,15 +93,9 @@
 
   noticeCapacity.value = noticeRoomNumber.value;
 
-  noticeTimeIn.addEventListener('change', function () {
-    syncSelect(noticeTimeOut);
-  });
-
-  noticeTimeOut.addEventListener('change', function () {
-    syncSelect(noticeTimeIn);
-  });
-
-  noticeType.addEventListener('change', setMinPrice);
+  window.synchronizeFields(noticeTimeIn, noticeTimeOut, syncValues);
+  window.synchronizeFields(noticeTimeOut, noticeTimeIn, syncValues);
+  window.synchronizeFields(noticeType, noticePrice, syncValueWithMin);
 
   noticeRoomNumber.addEventListener('change', setGuests);
 

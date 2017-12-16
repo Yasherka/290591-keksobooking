@@ -45,7 +45,7 @@
       var index = Number(pin.dataset.index);
 
       window.map.hiddenPopup();
-      window.util.renderElementBefore(window.card.createCardElement(window.data.proposes[index]), window.map.cardContainer, window.map.cardPosition);
+      window.showCard(index);
       document.addEventListener('keydown', window.map.onPopupEscPress);
     }
   };
