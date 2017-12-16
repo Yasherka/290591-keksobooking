@@ -26,30 +26,29 @@
     element.min = minPrices[index];
   };
 
-  var setGuests = function (event) {
-    var index = event.target.value;
-    var capacities = noticeCapacity.options;
+  var setGuests = function (capacity, index) {
+    var capacities = capacity.options;
 
     switch (index) {
-      case '1':
+      case 0:
         window.util.disableElements(capacities);
         capacities[2].disabled = false;
         capacities.selectedIndex = 2;
         break;
-      case '2':
+      case 1:
         window.util.disableElements(capacities);
         capacities[1].disabled = false;
         capacities[2].disabled = false;
         capacities.selectedIndex = 1;
         break;
-      case '3':
+      case 2:
         window.util.disableElements(capacities);
         capacities[0].disabled = false;
         capacities[1].disabled = false;
         capacities[2].disabled = false;
         capacities.selectedIndex = 0;
         break;
-      case '100':
+      case 3:
         window.util.disableElements(capacities);
         capacities[3].disabled = false;
         capacities.selectedIndex = 3;
@@ -96,8 +95,7 @@
   window.synchronizeFields(noticeTimeIn, noticeTimeOut, syncValues);
   window.synchronizeFields(noticeTimeOut, noticeTimeIn, syncValues);
   window.synchronizeFields(noticeType, noticePrice, syncValueWithMin);
-
-  noticeRoomNumber.addEventListener('change', setGuests);
+  window.synchronizeFields(noticeRoomNumber, noticeCapacity, setGuests);
 
   noticeSubmit.addEventListener('click', function (event) {
     if (checkInputs()) {
