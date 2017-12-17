@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var TIMES = ['12:00', '13:00', '14:00'];
+  var TYPES = ['flat', 'bungalo', 'house', 'palace'];
+  var MIN_PRICES = [1000, 0, 5000, 10000];
+
   var noticeForm = document.querySelector('.notice__form');
   var noticeTitle = noticeForm.querySelector('#title');
   var noticeAddress = noticeForm.querySelector('#address');
@@ -17,38 +21,38 @@
     element.required = true;
   };
 
-  var syncValues = function (element, index) {
-    element.selectedIndex = index;
+  var syncValues = function (element, value) {
+    element.value = value;
   };
 
-  var syncValueWithMin = function (element, index) {
-    var minPrices = [1000, 0, 5000, 10000];
-    element.min = minPrices[index];
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
   };
 
-  var setGuests = function (capacity, index) {
-    var capacities = capacity.options;
+  var setGuests = function (event) {
+    var index = event.target.value;
+    var capacities = noticeCapacity.options;
 
     switch (index) {
-      case 0:
+      case '1':
         window.util.disableElements(capacities);
         capacities[2].disabled = false;
         capacities.selectedIndex = 2;
         break;
-      case 1:
+      case '2':
         window.util.disableElements(capacities);
         capacities[1].disabled = false;
         capacities[2].disabled = false;
         capacities.selectedIndex = 1;
         break;
-      case 2:
+      case '3':
         window.util.disableElements(capacities);
         capacities[0].disabled = false;
         capacities[1].disabled = false;
         capacities[2].disabled = false;
         capacities.selectedIndex = 0;
         break;
-      case 3:
+      case '100':
         window.util.disableElements(capacities);
         capacities[3].disabled = false;
         capacities.selectedIndex = 3;
@@ -92,10 +96,11 @@
 
   noticeCapacity.value = noticeRoomNumber.value;
 
-  window.synchronizeFields(noticeTimeIn, noticeTimeOut, syncValues);
-  window.synchronizeFields(noticeTimeOut, noticeTimeIn, syncValues);
-  window.synchronizeFields(noticeType, noticePrice, syncValueWithMin);
-  window.synchronizeFields(noticeRoomNumber, noticeCapacity, setGuests);
+  window.synchronizeFields(noticeTimeIn, noticeTimeOut, TIMES, TIMES, syncValues);
+  window.synchronizeFields(noticeTimeOut, noticeTimeIn, TIMES, TIMES, syncValues);
+  window.synchronizeFields(noticeType, noticePrice, TYPES, MIN_PRICES, syncValueWithMin);
+
+  noticeRoomNumber.addEventListener('change', setGuests);
 
   noticeSubmit.addEventListener('click', function (event) {
     if (checkInputs()) {
