@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var TIMES = ['12:00', '13:00', '14:00'];
+  var TYPES = ['flat', 'bungalo', 'house', 'palace'];
+  var MIN_PRICES = [1000, 0, 5000, 10000];
+
   var noticeForm = document.querySelector('.notice__form');
   var noticeTitle = noticeForm.querySelector('#title');
   var noticeAddress = noticeForm.querySelector('#address');
@@ -17,18 +21,12 @@
     element.required = true;
   };
 
-  var syncSelect = function (secondSelect) {
-    var index = event.target.selectedIndex;
-    secondSelect.selectedIndex = index;
+  var syncValues = function (element, value) {
+    element.value = value;
   };
 
-  var setMinPrice = function (event) {
-    var index = event.target.selectedIndex;
-    var minPrices = [1000, 0, 5000, 10000];
-
-    noticePrice.min = minPrices[index];
-
-    return noticePrice.min;
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
   };
 
   var setGuests = function (event) {
@@ -98,15 +96,9 @@
 
   noticeCapacity.value = noticeRoomNumber.value;
 
-  noticeTimeIn.addEventListener('change', function () {
-    syncSelect(noticeTimeOut);
-  });
-
-  noticeTimeOut.addEventListener('change', function () {
-    syncSelect(noticeTimeIn);
-  });
-
-  noticeType.addEventListener('change', setMinPrice);
+  window.synchronizeFields(noticeTimeIn, noticeTimeOut, TIMES, TIMES, syncValues);
+  window.synchronizeFields(noticeTimeOut, noticeTimeIn, TIMES, TIMES, syncValues);
+  window.synchronizeFields(noticeType, noticePrice, TYPES, MIN_PRICES, syncValueWithMin);
 
   noticeRoomNumber.addEventListener('change', setGuests);
 

@@ -11,9 +11,6 @@
       for (var i = 0; i < array.length; i++) {
         array[i].removeAttribute('disabled');
       }
-    },
-    renderElementBefore: function (element, container, position) {
-      container.insertBefore(element, position);
     }
   };
 })();
