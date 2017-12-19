@@ -3,14 +3,14 @@
 (function () {
   var URL = 'https://1510.dump.academy/keksobooking';
 
-  var setup = function (onSuccess, onError) {
+  var setup = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       switch (xhr.status) {
         case 200:
-          onSuccess(xhr.response);
+          onLoad(xhr.response);
           break;
         case 400:
           onError('Неверный запрос');
@@ -36,14 +36,14 @@
   };
 
   window.backend = {
-    save: function (data, onSuccess, onError) {
-      var xhr = setup(onSuccess, onError);
+    save: function (data, onLoad, onError) {
+      var xhr = setup(onLoad, onError);
 
       xhr.open('POST', URL);
       xhr.send(data);
     },
-    load: function (onSuccess, onError) {
-      var xhr = setup(onSuccess, onError);
+    load: function (onLoad, onError) {
+      var xhr = setup(onLoad, onError);
 
       xhr.open('GET', URL + '/data');
       xhr.send();
