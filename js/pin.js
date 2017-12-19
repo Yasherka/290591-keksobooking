@@ -52,6 +52,7 @@
 
   var onMainPinClick = function () {
     var noticeForm = document.querySelector('.notice__form');
+    var pinsList = document.querySelectorAll('.map__pin');
 
     window.map.cardContainer.classList.remove('map--faded');
     noticeForm.classList.remove('notice__form--disabled');
@@ -63,9 +64,12 @@
     mainPin.removeEventListener('click', onMainPinClick);
   };
 
-  renderSimilarElements(window.data.proposes);
+  var errorHandler = function (errorMessage) {
+    console.log(errorMessage);
+  };
 
-  var pinsList = document.querySelectorAll('.map__pin');
+  // renderSimilarElements(window.data.proposes);
+  window.backend.load(renderSimilarElements, errorHandler);
 
   mainPin.addEventListener('click', onMainPinClick);
 
