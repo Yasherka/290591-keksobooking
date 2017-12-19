@@ -73,10 +73,6 @@
     return stopSubmit;
   };
 
-  var errorHandler = function (errorMessage) {
-    console.log(errorMessage);
-  };
-
   noticeForm.action = 'https://js.dump.academy/keksobooking';
 
   noticeTitle.setAttribute('minlength', '30');
@@ -111,8 +107,8 @@
     } else {
       window.backend.save(new FormData(noticeForm), function () {
         noticeForm.reset();
-      });
+      }, window.util.errorHandler);
       event.preventDefault();
     }
-  }, errorHandler);
+  });
 })();

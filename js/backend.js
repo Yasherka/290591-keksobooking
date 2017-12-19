@@ -8,20 +8,29 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
-        onSuccess(xhr.response);
-      } else {
-        onError(xhr.response);
+      switch (xhr.status) {
+        case 200:
+          onSuccess(xhr.response);
+          break;
+        case 400:
+          onError('Неверный запрос');
+          break;
+        case 404:
+          onError('Не найдено на сервере');
+          break;
+
+        default:
+          onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
     });
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      onError('Запрос не успел выполниться за ' + xhr.timeout / 1000 + ' сек.');
     });
 
-    xhr.timeout = 10000;
+    xhr.timeout = 7000;
 
     return xhr;
   };

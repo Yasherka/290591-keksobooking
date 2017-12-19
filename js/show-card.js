@@ -37,18 +37,9 @@
     return cardElement;
   };
 
-  var errorHandler = function (errorMessage) {
-    console.log(errorMessage);
-  };
-
   window.showCard = function (index) {
-    // var card = createCardElement(window.data.proposes[index]);
-    // window.map.cardContainer.insertBefore(card, window.map.cardPosition);
-
-    window.backend.load(function (data) {
-      var card = createCardElement(data[index]);
-      window.map.cardContainer.insertBefore(card, window.map.cardPosition);
-    }, errorHandler);
+    var card = createCardElement(window.util.proposes[index]);
+    window.map.cardContainer.insertBefore(card, window.map.cardPosition);
   };
 
 })();
