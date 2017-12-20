@@ -9,6 +9,11 @@
   var similarPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var mainPin = document.querySelector('.map__pin--main');
 
+  var getData = function (data) {
+    window.util.proposes = data;
+    renderSimilarElements(window.util.proposes);
+  };
+
   var createPinElement = function (pin, index) {
     var pinElement = similarPinTemplate.cloneNode(true);
     var pinHeight = pinElement.querySelector('img').getAttribute('height');
@@ -52,6 +57,7 @@
 
   var onMainPinClick = function () {
     var noticeForm = document.querySelector('.notice__form');
+    var pinsList = document.querySelectorAll('.map__pin');
 
     window.map.cardContainer.classList.remove('map--faded');
     noticeForm.classList.remove('notice__form--disabled');
@@ -63,9 +69,7 @@
     mainPin.removeEventListener('click', onMainPinClick);
   };
 
-  renderSimilarElements(window.data.proposes);
-
-  var pinsList = document.querySelectorAll('.map__pin');
+  renderSimilarElements(window.util.proposes);
 
   mainPin.addEventListener('click', onMainPinClick);
 
@@ -129,6 +133,8 @@
   });
 
   similarListElement.addEventListener('click', onPinClick);
+
+  window.backend.load(getData, window.util.errorHandler);
 
   window.pin = {
     deactivatePin: function () {

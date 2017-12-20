@@ -14,7 +14,6 @@
   var noticeTimeOut = noticeForm.querySelector('#timeout');
   var noticeRoomNumber = noticeForm.querySelector('#room_number');
   var noticeCapacity = noticeForm.querySelector('#capacity');
-  var noticeSubmit = noticeForm.querySelector('.form__submit');
   var inputs = noticeForm.querySelectorAll('input');
 
   var setRecuired = function (element) {
@@ -102,8 +101,13 @@
 
   noticeRoomNumber.addEventListener('change', setGuests);
 
-  noticeSubmit.addEventListener('click', function (event) {
+  noticeForm.addEventListener('submit', function (event) {
     if (checkInputs()) {
+      event.preventDefault();
+    } else {
+      window.backend.save(new FormData(noticeForm), function () {
+        noticeForm.reset();
+      }, window.util.errorHandler);
       event.preventDefault();
     }
   });

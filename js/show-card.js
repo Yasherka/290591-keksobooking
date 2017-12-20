@@ -38,7 +38,7 @@
   };
 
   window.showCard = function (index) {
-    var card = createCardElement(window.data.proposes[index]);
+    var card = createCardElement(window.util.proposes[index]);
     window.map.cardContainer.insertBefore(card, window.map.cardPosition);
   };
 
