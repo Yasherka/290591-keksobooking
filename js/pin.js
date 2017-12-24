@@ -9,11 +9,6 @@
   var similarPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var mainPin = document.querySelector('.map__pin--main');
 
-  var getData = function (data) {
-    window.util.proposes = data;
-    renderSimilarElements(window.util.proposes);
-  };
-
   var createPinElement = function (pin, index) {
     var pinElement = similarPinTemplate.cloneNode(true);
     var pinHeight = pinElement.querySelector('img').getAttribute('height');
@@ -21,7 +16,7 @@
     pinElement.style.left = pin.location.x + 'px';
     pinElement.style.top = (pin.location.y - pinHeight / 2 - POINTER_HEIGHT) + 'px';
     pinElement.querySelector('img').setAttribute('src', pin.author.avatar);
-    pinElement.classList.add('hidden');
+    // pinElement.classList.add('hidden');
     pinElement.setAttribute('tabindex', '0');
     pinElement.dataset.index = index;
 
@@ -29,12 +24,18 @@
   };
 
   var renderSimilarElements = function (array) {
+    var takeNumber = array.length > 5 ? 5 : array.length;
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < array.length; i++) {
+    for (var i = 0; i < takeNumber; i++) {
       fragment.appendChild(createPinElement(array[i], i));
     }
     similarListElement.appendChild(fragment);
+  };
+
+  var getData = function (data) {
+    window.util.proposes = data;
+    window.pin.renderSimilarElements(window.util.proposes);
   };
 
   var onPinClick = function (event) {
@@ -57,19 +58,18 @@
 
   var onMainPinClick = function () {
     var noticeForm = document.querySelector('.notice__form');
-    var pinsList = document.querySelectorAll('.map__pin');
+    //  var pinsList = document.querySelectorAll('.map__pin');
 
     window.map.cardContainer.classList.remove('map--faded');
     noticeForm.classList.remove('notice__form--disabled');
     window.util.enableElements(window.map.noticeFieldsets);
 
-    for (var i = 0; i < pinsList.length; i++) {
-      pinsList[i].classList.remove('hidden');
-    }
+    // for (var i = 0; i < pinsList.length; i++) {
+    //   pinsList[i].classList.remove('hidden');
+    // }
+    window.backend.load(getData, window.util.errorHandler);
     mainPin.removeEventListener('click', onMainPinClick);
   };
-
-  renderSimilarElements(window.util.proposes);
 
   mainPin.addEventListener('click', onMainPinClick);
 
@@ -134,11 +134,10 @@
 
   similarListElement.addEventListener('click', onPinClick);
 
-  window.backend.load(getData, window.util.errorHandler);
-
   window.pin = {
     deactivatePin: function () {
       similarListElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
-    }
+    },
+    renderSimilarElements: renderSimilarElements
   };
 })();

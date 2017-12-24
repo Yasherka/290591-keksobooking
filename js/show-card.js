@@ -38,8 +38,11 @@
   };
 
   window.showCard = function (index) {
-    var card = createCardElement(window.util.proposes[index]);
-    window.map.cardContainer.insertBefore(card, window.map.cardPosition);
+    var card;
+
+    card = window.util.filtered.length === 0 ? createCardElement(window.util.proposes[index]) : createCardElement(window.util.filtered[index]);
+
+    window.map.cardContainer.insertBefore(card, window.map.filtersBar);
   };
 
 })();
