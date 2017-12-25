@@ -26,6 +26,14 @@
       node.style.color = 'white';
       node.textContent = errorMessage;
       document.body.insertAdjacentElement('afterbegin', node);
+    },
+    debounse: function (func) {
+      var DEBOUNCE_INTERVAL = 800;
+      var lastTimeout;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(func, DEBOUNCE_INTERVAL);
     }
   };
 })();
