@@ -1,10 +1,11 @@
 'use strict';
 
 (function () {
+  var lastTimeout;
+
   window.util = {
     proposes: [],
     filtered: [],
-    filteredProposes: [],
     disableElements: function (array) {
       for (var i = 0; i < array.length; i++) {
         array[i].setAttribute('disabled', 'disabled');
@@ -28,8 +29,7 @@
       document.body.insertAdjacentElement('afterbegin', node);
     },
     debounse: function (func) {
-      var DEBOUNCE_INTERVAL = 800;
-      var lastTimeout;
+      var DEBOUNCE_INTERVAL = 500;
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }
