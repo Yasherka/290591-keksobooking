@@ -18,7 +18,6 @@
         case 404:
           onError('Не найдено на сервере');
           break;
-
         default:
           onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
       }

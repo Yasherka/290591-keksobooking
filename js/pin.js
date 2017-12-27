@@ -11,13 +11,12 @@
 
   var createPinElement = function (pin, index) {
     var pinElement = similarPinTemplate.cloneNode(true);
-    var pinHeight = pinElement.querySelector('img').getAttribute('height');
+    var pinHeight = pinElement.querySelector('img').height;
 
     pinElement.style.left = pin.location.x + 'px';
     pinElement.style.top = (pin.location.y - pinHeight / 2 - POINTER_HEIGHT) + 'px';
-    pinElement.querySelector('img').setAttribute('src', pin.author.avatar);
-    // pinElement.classList.add('hidden');
-    pinElement.setAttribute('tabindex', '0');
+    pinElement.querySelector('img').src = pin.author.avatar;
+    pinElement.tabindex = 0;
     pinElement.dataset.index = index;
 
     return pinElement;
@@ -45,7 +44,7 @@
       var pin = target.parentNode;
 
       if (similarListElement.querySelector('.map__pin--active')) {
-        window.pin.deactivatePin();
+        window.pin.deactivate();
       }
       pin.classList.add('map__pin--active');
       var index = Number(pin.dataset.index);
@@ -58,16 +57,13 @@
 
   var onMainPinClick = function () {
     var noticeForm = document.querySelector('.notice__form');
-    //  var pinsList = document.querySelectorAll('.map__pin');
+
+    window.backend.load(getData, window.util.errorHandler);
 
     window.map.cardContainer.classList.remove('map--faded');
     noticeForm.classList.remove('notice__form--disabled');
     window.util.enableElements(window.map.noticeFieldsets);
 
-    // for (var i = 0; i < pinsList.length; i++) {
-    //   pinsList[i].classList.remove('hidden');
-    // }
-    window.backend.load(getData, window.util.errorHandler);
     mainPin.removeEventListener('click', onMainPinClick);
   };
 
@@ -135,7 +131,7 @@
   similarListElement.addEventListener('click', onPinClick);
 
   window.pin = {
-    deactivatePin: function () {
+    deactivate: function () {
       similarListElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
     },
     renderSimilarElements: renderSimilarElements

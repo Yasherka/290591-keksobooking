@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500;
   var lastTimeout;
 
   window.util = {
@@ -29,7 +30,6 @@
       document.body.insertAdjacentElement('afterbegin', node);
     },
     debounse: function (func) {
-      var DEBOUNCE_INTERVAL = 500;
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }

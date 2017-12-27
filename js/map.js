@@ -11,7 +11,7 @@
     onPopupEscPress: function (event) {
       if (event.keyCode === ESC_KEYCODE) {
         window.map.hiddenPopup();
-        window.pin.deactivatePin();
+        window.pin.deactivate();
       }
     },
 
@@ -28,7 +28,7 @@
 
       if (target.className === 'popup__close') {
         window.map.hiddenPopup();
-        window.pin.deactivatePin();
+        window.pin.deactivate();
       }
     }
   };
@@ -38,9 +38,9 @@
   window.map.cardContainer.addEventListener('click', window.map.onPopupCloseClick);
 
   var cleanMap = function () {
-    var pin = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    if (pin) {
-      pin.forEach(function (pinElement) {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    if (pins) {
+      pins.forEach(function (pinElement) {
         pinElement.parentNode.removeChild(pinElement);
       });
     }
@@ -57,7 +57,7 @@
   };
 
   var typeFilter = window.map.filtersBar.querySelector('#housing-type');
-  var isValidTypes = function (propose) {
+  var isValidType = function (propose) {
     var typeValue = typeFilter.value;
     if (typeValue === 'any') {
       return true;
@@ -66,7 +66,7 @@
   };
 
   var roomsFilter = window.map.filtersBar.querySelector('#housing-rooms');
-  var isValidRooms = function (propose) {
+  var isValidRoom = function (propose) {
     var roomsFilterValue = roomsFilter.value;
     if (roomsFilterValue === 'any') {
       return true;
@@ -90,11 +90,11 @@
   };
 
   var featuresFilter = window.map.filtersBar.querySelector('.map__filter-set');
-  var isValidFeaturesFilter = function (propose) {
-    var featuresList = featuresFilter.querySelectorAll('input[type="checkbox"]:checked');
+  var isValidFeatures = function (propose) {
+    var features = featuresFilter.querySelectorAll('input[type="checkbox"]:checked');
 
-    return Array.prototype.every.call(featuresList, function (feature) {
-      return propose.offer.features.indexOf(feature.value) !== -1;
+    return Array.prototype.every.call(features, function (featureElement) {
+      return propose.offer.features.indexOf(featureElement.value) !== -1;
     });
   };
 
@@ -104,10 +104,10 @@
 
   var filterAll = function (propose) {
     return isValidGuest(propose)
-      && isValidTypes(propose)
-      && isValidRooms(propose)
+      && isValidType(propose)
+      && isValidRoom(propose)
       && isValidPrice(propose)
-      && isValidFeaturesFilter(propose);
+      && isValidFeatures(propose);
   };
 
   var filtrateProposes = function () {

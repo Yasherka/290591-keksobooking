@@ -21,7 +21,7 @@
 
     cardElement.replaceChild(cardListElement, fullList);
 
-    cardElement.querySelector('.popup__avatar').setAttribute('src', propose.author.avatar);
+    cardElement.querySelector('.popup__avatar').src = propose.author.avatar;
     cardElement.querySelector('h3').textContent = propose.offer.title;
     cardElement.querySelector('p small').textContent = propose.offer.address;
     cardElement.querySelector('.popup__price').innerHTML = propose.offer.price + ' &#x20bd;/ночь';
