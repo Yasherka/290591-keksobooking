@@ -75,8 +75,8 @@
 
   noticeForm.action = 'https://js.dump.academy/keksobooking';
 
-  noticeTitle.setAttribute('minlength', '30');
-  noticeTitle.setAttribute('maxlength', '100');
+  noticeTitle.minLength = 30;
+  noticeTitle.maxLength = 100;
   setRecuired(noticeTitle);
 
   noticeAddress.readOnly = true;

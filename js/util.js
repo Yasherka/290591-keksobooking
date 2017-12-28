@@ -1,7 +1,12 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500;
+  var lastTimeout;
+
   window.util = {
+    proposes: [],
+    filtered: [],
     disableElements: function (array) {
       for (var i = 0; i < array.length; i++) {
         array[i].setAttribute('disabled', 'disabled');
@@ -12,7 +17,6 @@
         array[i].removeAttribute('disabled');
       }
     },
-    proposes: [],
     errorHandler: function (errorMessage) {
       var node = document.createElement('div');
       node.style = 'z-index: 100; margin: 0 auto; margin-left: -160px; padding: 10px; text-align: center; background-color: rgba(255, 86, 53, 0.7); width: 300px; border-radius: 10px';
@@ -24,6 +28,12 @@
       node.style.color = 'white';
       node.textContent = errorMessage;
       document.body.insertAdjacentElement('afterbegin', node);
+    },
+    debounse: function (func) {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(func, DEBOUNCE_INTERVAL);
     }
   };
 })();
