@@ -107,6 +107,10 @@
     } else {
       window.backend.save(new FormData(noticeForm), function () {
         noticeForm.reset();
+
+        noticePrice.value = 1000;
+        noticeCapacity.value = noticeRoomNumber.value;
+        window.form.setNoticeAddress(window.pin.location);
       }, window.util.errorHandler);
       event.preventDefault();
     }
