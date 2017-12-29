@@ -121,7 +121,6 @@
         x: mainPin.offsetLeft - POINTER_WIDTH / 2,
         y: mainPin.offsetTop + mainPinHeight / 2 + MAIN_POINTER_HEIGHT
       };
-      window.pin.location = pinLocation;
       window.form.setNoticeAddress(pinLocation);
     };
 
@@ -132,7 +131,6 @@
   similarListElement.addEventListener('click', onPinClick);
 
   window.pin = {
-    location: [],
     deactivate: function () {
       similarListElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
     },
