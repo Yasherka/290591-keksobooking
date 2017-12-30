@@ -125,10 +125,10 @@
 
   window.pin = {
     deactivate: function () {
-        var activePin = similarListElement.querySelector('.map__pin--active');
-        if (activePin) {
-            activePin.classList.remove('map__pin--active');
-        }
+      var activePin = similarListElement.querySelector('.map__pin--active');
+      if (activePin) {
+        activePin.classList.remove('map__pin--active');
+      }
     },
     renderSimilarElements: renderSimilarElements
   };
