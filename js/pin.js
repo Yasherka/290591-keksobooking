@@ -10,7 +10,7 @@
   var similarPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var mainPin = document.querySelector('.map__pin--main');
 
-  var createPinElement = function (pin, index) {
+  var createPinElement = function (pin) {
     var pinElement = similarPinTemplate.cloneNode(true);
     var pinHeight = pinElement.querySelector('img').height;
 
@@ -24,7 +24,7 @@
 
       pinElement.classList.add('map__pin--active');
       window.map.hiddenPopup();
-      window.showCard(index);
+      window.showCard(pin);
       document.addEventListener('keydown', window.map.onPopupEscPress);
     };
 
@@ -38,7 +38,7 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < takeNumber; i++) {
-      fragment.appendChild(createPinElement(array[i], i));
+      fragment.appendChild(createPinElement(array[i]));
     }
     similarListElement.appendChild(fragment);
   };

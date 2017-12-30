@@ -6,7 +6,6 @@
 
   window.util = {
     proposes: [],
-    filtered: [],
     disableElements: function (array) {
       for (var i = 0; i < array.length; i++) {
         array[i].setAttribute('disabled', 'disabled');

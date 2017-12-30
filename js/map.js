@@ -113,8 +113,7 @@
   var filtrateProposes = function () {
     var filtredProposes = window.util.proposes.slice();
 
-    window.util.filtered = filtredProposes.filter(filterAll);
-    return window.util.filtered;
+    return filtredProposes.filter(filterAll);
   };
 
   var updatePins = function () {
