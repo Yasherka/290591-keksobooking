@@ -37,12 +37,8 @@
     return cardElement;
   };
 
-  window.showCard = function (index) {
-    var card;
-
-    card = window.util.filtered.length === 0 ? createCardElement(window.util.proposes[index]) : createCardElement(window.util.filtered[index]);
-
-    window.map.cardContainer.insertBefore(card, window.map.filtersBar);
+  window.showCard = function (propose) {
+    window.map.cardContainer.insertBefore(createCardElement(propose), window.map.filtersBar);
   };
 
 })();

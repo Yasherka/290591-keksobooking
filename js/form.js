@@ -28,8 +28,8 @@
     element.min = value;
   };
 
-  var setGuests = function (event) {
-    var index = event.target.value;
+  var setGuests = function () {
+    var index = noticeRoomNumber.value;
     var capacities = noticeCapacity.options;
 
     switch (index) {
@@ -94,6 +94,7 @@
   setRecuired(noticePrice);
 
   noticeCapacity.value = noticeRoomNumber.value;
+  setGuests();
 
   window.synchronizeFields(noticeTimeIn, noticeTimeOut, TIMES, TIMES, syncValues);
   window.synchronizeFields(noticeTimeOut, noticeTimeIn, TIMES, TIMES, syncValues);
@@ -106,7 +107,13 @@
       event.preventDefault();
     } else {
       window.backend.save(new FormData(noticeForm), function () {
+        var address = noticeAddress.value;
         noticeForm.reset();
+
+        noticeAddress.value = address;
+        noticePrice.value = 1000;
+        noticeCapacity.value = noticeRoomNumber.value;
+        setGuests();
       }, window.util.errorHandler);
       event.preventDefault();
     }
