@@ -4,6 +4,7 @@
   var POINTER_HEIGHT = 18;
   var MAIN_POINTER_HEIGHT = 22;
   var POINTER_WIDTH = 10;
+  var MAX_PIN_COUNT = 5;
 
   var similarListElement = document.querySelector('.map__pins');
   var similarPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
@@ -17,13 +18,23 @@
     pinElement.style.top = (pin.location.y - pinHeight / 2 - POINTER_HEIGHT) + 'px';
     pinElement.querySelector('img').src = pin.author.avatar;
     pinElement.tabindex = 0;
-    pinElement.dataset.index = index;
+
+    var onPinClick = function () {
+      window.pin.deactivate();
+
+      pinElement.classList.add('map__pin--active');
+      window.map.hiddenPopup();
+      window.showCard(index);
+      document.addEventListener('keydown', window.map.onPopupEscPress);
+    };
+
+    pinElement.addEventListener('click', onPinClick);
 
     return pinElement;
   };
 
   var renderSimilarElements = function (array) {
-    var takeNumber = array.length > 5 ? 5 : array.length;
+    var takeNumber = array.length > MAX_PIN_COUNT ? MAX_PIN_COUNT : array.length;
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < takeNumber; i++) {
@@ -35,24 +46,6 @@
   var getData = function (data) {
     window.util.proposes = data;
     window.pin.renderSimilarElements(window.util.proposes);
-  };
-
-  var onPinClick = function (event) {
-    var target = event.target;
-
-    if (target.parentNode.className === 'map__pin') {
-      var pin = target.parentNode;
-
-      if (similarListElement.querySelector('.map__pin--active')) {
-        window.pin.deactivate();
-      }
-      pin.classList.add('map__pin--active');
-      var index = Number(pin.dataset.index);
-
-      window.map.hiddenPopup();
-      window.showCard(index);
-      document.addEventListener('keydown', window.map.onPopupEscPress);
-    }
   };
 
   var onMainPinClick = function () {
@@ -128,11 +121,14 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  similarListElement.addEventListener('click', onPinClick);
+  // similarListElement.addEventListener('click', onPinClick);
 
   window.pin = {
     deactivate: function () {
-      similarListElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
+        var activePin = similarListElement.querySelector('.map__pin--active');
+        if (activePin) {
+            activePin.classList.remove('map__pin--active');
+        }
     },
     renderSimilarElements: renderSimilarElements
   };
