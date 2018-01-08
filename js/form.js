@@ -4,8 +4,8 @@
   var URL = 'https://js.dump.academy/keksobooking';
   var TITLE_MIN = 30;
   var TITLE_MAX = 100;
-  var PRICE_MIN = 1000;
-  var PRICE_MAX = 1000000;
+  var PRICE_DEFAULT_MIN = 1000;
+  var PRICE_DEFAULT_MAX = 1000000;
 
   var TIMES = ['12:00', '13:00', '14:00'];
   var TYPES = ['flat', 'bungalo', 'house', 'palace'];
@@ -107,9 +107,9 @@
   };
 
   noticePrice.type = 'number';
-  noticePrice.value = PRICE_MIN;
-  noticePrice.min = PRICE_MIN;
-  noticePrice.max = PRICE_MAX;
+  noticePrice.value = PRICE_DEFAULT_MIN;
+  noticePrice.min = PRICE_DEFAULT_MIN;
+  noticePrice.max = PRICE_DEFAULT_MAX;
   setRecuired(noticePrice);
 
   noticeCapacity.value = noticeRoomNumber.value;
@@ -130,7 +130,7 @@
         var address = noticeAddress.value;
         noticeForm.reset();
 
-        var images = window.photoPreview.querySelectorAll('img');
+        var images = document.querySelectorAll('.form__photo-container img');
         if (images) {
           images.forEach(function (image) {
             image.remove();
@@ -138,7 +138,7 @@
         }
 
         noticeAddress.value = address;
-        noticePrice.value = PRICE_MIN;
+        noticePrice.value = PRICE_DEFAULT_MIN;
         noticeCapacity.value = noticeRoomNumber.value;
         setGuests();
       }, window.util.errorHandler);

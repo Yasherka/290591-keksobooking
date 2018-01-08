@@ -27,7 +27,7 @@
     cardElement.querySelector('p:last-of-type').textContent = propose.offer.description;
 
     propose.offer.features.forEach(function (feature) {
-      cardElement.querySelector('.popup__features').innerHTML += '<li class=\'feature feature--' + feature + '\'></li>';
+      cardListElement.innerHTML += '<li class=\'feature feature--' + feature + '\'></li>';
     });
 
     return cardElement;

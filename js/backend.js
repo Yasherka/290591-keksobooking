@@ -5,7 +5,7 @@
   var StatusCode = {
     OK: 200,
     REQUEST_ERR: 400,
-    CLIENT_ERR: 404,
+    NOT_FOUND: 404,
     SERVER_ERR: 500
   };
 
@@ -21,7 +21,7 @@
         case StatusCode.REQUEST_ERR:
           onError('Неверный запрос');
           break;
-        case StatusCode.CLIENT_ERR:
+        case StatusCode.NOT_FOUND:
           onError('Не найдено на сервере');
           break;
         case StatusCode.SERVER_ERR:

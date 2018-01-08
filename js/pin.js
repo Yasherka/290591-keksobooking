@@ -70,53 +70,58 @@
     bottom: LIMIT_BOTTOM - mainPinHeight / 2 - MAIN_POINTER_HEIGHT
   };
 
+  var startCoords = {
+    x: 0,
+    y: 0
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    var newCoords = {
+      x: mainPin.offsetLeft - shift.x,
+      y: mainPin.offsetTop - shift.y
+    };
+
+    if (newCoords.y < limits.top) {
+      newCoords.y = limits.top;
+    } else if (newCoords.y > limits.bottom) {
+      newCoords.y = limits.bottom;
+    }
+
+    mainPin.style.left = newCoords.x + 'px';
+    mainPin.style.top = newCoords.y + 'px';
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    var pinLocation = {
+      x: mainPin.offsetLeft - POINTER_WIDTH / 2,
+      y: mainPin.offsetTop + mainPinHeight / 2 + MAIN_POINTER_HEIGHT
+    };
+    window.form.setNoticeAddress(pinLocation);
+  };
+
   mainPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
-    var startCoords = {
+    startCoords = {
       x: evt.clientX,
       y: evt.clientY
-    };
-
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-
-      var newCoords = {
-        x: mainPin.offsetLeft - shift.x,
-        y: mainPin.offsetTop - shift.y
-      };
-
-      if (newCoords.y < limits.top) {
-        newCoords.y = limits.top;
-      } else if (newCoords.y > limits.bottom) {
-        newCoords.y = limits.bottom;
-      }
-
-      mainPin.style.left = newCoords.x + 'px';
-      mainPin.style.top = newCoords.y + 'px';
-    };
-
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-
-      var pinLocation = {
-        x: mainPin.offsetLeft - POINTER_WIDTH / 2,
-        y: mainPin.offsetTop + mainPinHeight / 2 + MAIN_POINTER_HEIGHT
-      };
-      window.form.setNoticeAddress(pinLocation);
     };
 
     document.addEventListener('mousemove', onMouseMove);

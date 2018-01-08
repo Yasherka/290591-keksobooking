@@ -8,7 +8,7 @@
   var avatarChooser = document.querySelector('.notice__photo input[type=file]');
   var avatarPreview = document.querySelector('.notice__preview img');
   var photoChooser = document.querySelector('.form__photo-container input[type=file]');
-  window.photoPreview = document.querySelector('.form__photo-container');
+  var photoPreview = document.querySelector('.form__photo-container');
 
   var renderPhoto = function (file, preview, id) {
     var fileName = file.name.toLowerCase();
@@ -45,6 +45,6 @@
   photoChooser.addEventListener('change', function (evt) {
     var id = evt.target.id;
     var photo = photoChooser.files[0];
-    renderPhoto(photo, window.photoPreview, id);
+    renderPhoto(photo, photoPreview, id);
   });
 })();

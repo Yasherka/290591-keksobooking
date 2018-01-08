@@ -2,8 +2,8 @@
 
 (function () {
   var ESC_KEYCODE = 27;
-  var PRICE_LOW = 1000;
-  var PRICE_MIDDLE = 5000;
+  var PRICE_FILTER_LOW = 10000;
+  var PRICE_FILTER_MIDDLE = 50000;
 
   window.map = {
     cardContainer: document.querySelector('.map'),
@@ -81,11 +81,11 @@
     var priceFilterValue = priceFilter.value;
     switch (priceFilterValue) {
       case 'low':
-        return propose.offer.price < PRICE_LOW;
+        return propose.offer.price < PRICE_FILTER_LOW;
       case 'middle':
-        return propose.offer.price >= PRICE_LOW && propose.offer.price < PRICE_MIDDLE;
+        return propose.offer.price >= PRICE_FILTER_LOW && propose.offer.price < PRICE_FILTER_MIDDLE;
       case 'high':
-        return propose.offer.price >= PRICE_MIDDLE;
+        return propose.offer.price >= PRICE_FILTER_MIDDLE;
       default:
         return true;
     }
