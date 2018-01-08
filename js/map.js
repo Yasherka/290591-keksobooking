@@ -2,6 +2,8 @@
 
 (function () {
   var ESC_KEYCODE = 27;
+  var PRICE_LOW = 1000;
+  var PRICE_MIDDLE = 5000;
 
   window.map = {
     cardContainer: document.querySelector('.map'),
@@ -79,11 +81,11 @@
     var priceFilterValue = priceFilter.value;
     switch (priceFilterValue) {
       case 'low':
-        return propose.offer.price < 10000;
+        return propose.offer.price < PRICE_LOW;
       case 'middle':
-        return propose.offer.price >= 10000 && propose.offer.price < 50000;
+        return propose.offer.price >= PRICE_LOW && propose.offer.price < PRICE_MIDDLE;
       case 'high':
-        return propose.offer.price >= 50000;
+        return propose.offer.price >= PRICE_MIDDLE;
       default:
         return true;
     }

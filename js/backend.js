@@ -2,6 +2,12 @@
 
 (function () {
   var URL = 'https://1510.dump.academy/keksobooking';
+  var StatusCode = {
+    OK: 200,
+    REQUEST_ERR: 400,
+    CLIENT_ERR: 404,
+    SERVER_ERR: 500
+  };
 
   var setup = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
@@ -9,14 +15,17 @@
 
     xhr.addEventListener('load', function () {
       switch (xhr.status) {
-        case 200:
+        case StatusCode.OK:
           onLoad(xhr.response);
           break;
-        case 400:
+        case StatusCode.REQUEST_ERR:
           onError('Неверный запрос');
           break;
-        case 404:
+        case StatusCode.CLIENT_ERR:
           onError('Не найдено на сервере');
+          break;
+        case StatusCode.SERVER_ERR:
+          onError('Внутренняя ошибка сервера');
           break;
         default:
           onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
