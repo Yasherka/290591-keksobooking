@@ -2,7 +2,6 @@
 
 (function () {
   var cardTemplate = document.querySelector('template').content.querySelector('.map__card');
-  var cardListTemplate = document.querySelector('template').content.querySelector('.map__card .popup__features');
 
   var apartmentTypes = {
     'flat': 'Квартира',
@@ -12,10 +11,9 @@
 
   var createCardElement = function (propose) {
     var cardElement = cardTemplate.cloneNode(true);
-    var cardListElement = cardListTemplate.cloneNode();
     var fullList = cardElement.querySelector('.popup__features');
 
-    cardElement.replaceChild(cardListElement, fullList);
+    var cardListElement = cardTemplate.querySelector('.popup__features').cloneNode(false);
 
     cardElement.querySelector('.popup__avatar').src = propose.author.avatar;
     cardElement.querySelector('h3').textContent = propose.offer.title;
@@ -27,8 +25,9 @@
     cardElement.querySelector('p:last-of-type').textContent = propose.offer.description;
 
     propose.offer.features.forEach(function (feature) {
-      cardListElement.innerHTML += '<li class=\'feature feature--' + feature + '\'></li>';
+      cardListElement.innerHTML += '<li class="feature feature--' + feature + '"></li>';
     });
+    cardElement.replaceChild(cardListElement, fullList);
 
     return cardElement;
   };
