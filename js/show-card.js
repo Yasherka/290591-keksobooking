@@ -3,7 +3,7 @@
 (function () {
   var cardTemplate = document.querySelector('template').content.querySelector('.map__card');
 
-  var apartmentTypes = {
+  var ApartmentsType = {
     'flat': 'Квартира',
     'house': 'Дом',
     'bungalo': 'Бунгало'
@@ -19,7 +19,7 @@
     cardElement.querySelector('h3').textContent = propose.offer.title;
     cardElement.querySelector('p small').textContent = propose.offer.address;
     cardElement.querySelector('.popup__price').innerHTML = propose.offer.price + ' &#x20bd;/ночь';
-    cardElement.querySelector('h4').textContent = apartmentTypes[propose.offer.type];
+    cardElement.querySelector('h4').textContent = ApartmentsType[propose.offer.type];
     cardElement.querySelector('p:nth-of-type(3)').textContent = propose.offer.rooms + ' комнаты для ' + propose.offer.guests + ' гостей';
     cardElement.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + propose.offer.checkin + ', выезд до ' + propose.offer.checkout;
     cardElement.querySelector('p:last-of-type').textContent = propose.offer.description;
