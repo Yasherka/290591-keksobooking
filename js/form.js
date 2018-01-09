@@ -1,9 +1,30 @@
 'use strict';
 
 (function () {
+  var URL = 'https://js.dump.academy/keksobooking';
+  var TITLE_MIN = 30;
+  var TITLE_MAX = 100;
+  var PRICE_DEFAULT_MIN = 1000;
+  var PRICE_DEFAULT_MAX = 1000000;
+
   var TIMES = ['12:00', '13:00', '14:00'];
   var TYPES = ['flat', 'bungalo', 'house', 'palace'];
-  var MIN_PRICES = [1000, 0, 5000, 10000];
+  var PRICES = [1000, 0, 5000, 10000];
+  var ROOMS = ['1', '2', '3', '100'];
+  var CAPACITY_VALUES = ['1', '2', '3', '0'];
+
+  var GuestIndex = {
+    ONE: 2,
+    TWO: 1,
+    THREE: 0,
+    NONE: 3
+  };
+  var RoomNumber = {
+    ONE: '1',
+    TWO: '2',
+    THREE: '3',
+    MANY: '100'
+  };
 
   var noticeForm = document.querySelector('.notice__form');
   var noticeTitle = noticeForm.querySelector('#title');
@@ -29,32 +50,30 @@
   };
 
   var setGuests = function () {
-    var index = noticeRoomNumber.value;
-    var capacities = noticeCapacity.options;
+    var number = noticeRoomNumber.value;
+    var capacities = Array.from(noticeCapacity.options);
 
-    switch (index) {
-      case '1':
-        window.util.disableElements(capacities);
-        capacities[2].disabled = false;
-        capacities.selectedIndex = 2;
+    window.util.disableElements(capacities);
+
+    switch (number) {
+      case RoomNumber.ONE:
+        capacities[GuestIndex.ONE].disabled = false;
+        capacities.selectedIndex = GuestIndex.ONE;
         break;
-      case '2':
-        window.util.disableElements(capacities);
-        capacities[1].disabled = false;
-        capacities[2].disabled = false;
-        capacities.selectedIndex = 1;
+      case RoomNumber.TWO:
+        capacities[GuestIndex.ONE].disabled = false;
+        capacities[GuestIndex.TWO].disabled = false;
+        capacities.selectedIndex = GuestIndex.TWO;
         break;
-      case '3':
-        window.util.disableElements(capacities);
-        capacities[0].disabled = false;
-        capacities[1].disabled = false;
-        capacities[2].disabled = false;
-        capacities.selectedIndex = 0;
+      case RoomNumber.THREE:
+        capacities[GuestIndex.ONE].disabled = false;
+        capacities[GuestIndex.TWO].disabled = false;
+        capacities[GuestIndex.THREE].disabled = false;
+        capacities.selectedIndex = GuestIndex.THREE;
         break;
-      case '100':
-        window.util.disableElements(capacities);
-        capacities[3].disabled = false;
-        capacities.selectedIndex = 3;
+      case RoomNumber.MANY:
+        capacities[GuestIndex.NONE].disabled = false;
+        capacities.selectedIndex = GuestIndex.NONE;
         break;
     }
   };
@@ -73,10 +92,10 @@
     return stopSubmit;
   };
 
-  noticeForm.action = 'https://js.dump.academy/keksobooking';
+  noticeForm.action = URL;
 
-  noticeTitle.minLength = 30;
-  noticeTitle.maxLength = 100;
+  noticeTitle.minLength = TITLE_MIN;
+  noticeTitle.maxLength = TITLE_MAX;
   setRecuired(noticeTitle);
 
   noticeAddress.readOnly = true;
@@ -88,9 +107,9 @@
   };
 
   noticePrice.type = 'number';
-  noticePrice.value = 1000;
-  noticePrice.min = 1000;
-  noticePrice.max = 1000000;
+  noticePrice.value = PRICE_DEFAULT_MIN;
+  noticePrice.min = PRICE_DEFAULT_MIN;
+  noticePrice.max = PRICE_DEFAULT_MAX;
   setRecuired(noticePrice);
 
   noticeCapacity.value = noticeRoomNumber.value;
@@ -98,7 +117,8 @@
 
   window.synchronizeFields(noticeTimeIn, noticeTimeOut, TIMES, TIMES, syncValues);
   window.synchronizeFields(noticeTimeOut, noticeTimeIn, TIMES, TIMES, syncValues);
-  window.synchronizeFields(noticeType, noticePrice, TYPES, MIN_PRICES, syncValueWithMin);
+  window.synchronizeFields(noticeType, noticePrice, TYPES, PRICES, syncValueWithMin);
+  window.synchronizeFields(noticeRoomNumber, noticeCapacity, ROOMS, CAPACITY_VALUES, syncValues);
 
   noticeRoomNumber.addEventListener('change', setGuests);
 
@@ -110,8 +130,15 @@
         var address = noticeAddress.value;
         noticeForm.reset();
 
+        var images = document.querySelectorAll('.form__photo-container img');
+        if (images) {
+          images.forEach(function (image) {
+            image.remove();
+          });
+        }
+
         noticeAddress.value = address;
-        noticePrice.value = 1000;
+        noticePrice.value = PRICE_DEFAULT_MIN;
         noticeCapacity.value = noticeRoomNumber.value;
         setGuests();
       }, window.util.errorHandler);

@@ -6,15 +6,15 @@
 
   window.util = {
     proposes: [],
-    disableElements: function (array) {
-      for (var i = 0; i < array.length; i++) {
-        array[i].setAttribute('disabled', 'disabled');
-      }
+    disableElements: function (elements) {
+      elements.forEach(function (element) {
+        element.disabled = true;
+      });
     },
-    enableElements: function (array) {
-      for (var i = 0; i < array.length; i++) {
-        array[i].removeAttribute('disabled');
-      }
+    enableElements: function (elements) {
+      elements.forEach(function (element) {
+        element.disabled = false;
+      });
     },
     errorHandler: function (errorMessage) {
       var node = document.createElement('div');
