@@ -1,7 +1,7 @@
-'use strict';
+﻿'use strict';
 
 (function () {
-  var URL = 'https://1510.dump.academy/keksobooking';
+  var URL = 'https://js.dump.academy/keksobooking';
   var StatusCode = {
     OK: 200,
     REQUEST_ERR: 400,
